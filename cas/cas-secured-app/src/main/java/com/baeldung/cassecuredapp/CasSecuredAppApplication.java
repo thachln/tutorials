@@ -1,5 +1,7 @@
 package com.baeldung.cassecuredapp;
 
+import javax.servlet.http.HttpSessionEvent;
+
 import org.jasig.cas.client.session.SingleSignOutFilter;
 import org.jasig.cas.client.session.SingleSignOutHttpSessionListener;
 import org.jasig.cas.client.validation.Cas30ServiceTicketValidator;
@@ -13,13 +15,10 @@ import org.springframework.security.cas.ServiceProperties;
 import org.springframework.security.cas.authentication.CasAuthenticationProvider;
 import org.springframework.security.cas.web.CasAuthenticationEntryPoint;
 import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-
-import javax.servlet.http.HttpSessionEvent;
 
 @SpringBootApplication
 public class CasSecuredAppApplication {
@@ -40,14 +39,14 @@ public class CasSecuredAppApplication {
 	@Primary
 	public AuthenticationEntryPoint authenticationEntryPoint(ServiceProperties sP) {
 	  CasAuthenticationEntryPoint entryPoint = new CasAuthenticationEntryPoint();
-	  entryPoint.setLoginUrl("https://localhost:6443/cas/login");
+	  entryPoint.setLoginUrl("http://localhost:3030/cas/login");
 	  entryPoint.setServiceProperties(sP);
 	  return entryPoint;
 	}
 
 	@Bean
 	public TicketValidator ticketValidator() {
-	  return new Cas30ServiceTicketValidator("https://localhost:6443/cas");
+	  return new Cas30ServiceTicketValidator("http://localhost:3030/cas");
 	}
 
 	@Bean
@@ -71,7 +70,7 @@ public class CasSecuredAppApplication {
 	@Bean
 	public LogoutFilter logoutFilter() {
 	  LogoutFilter logoutFilter = new LogoutFilter(
-	    "https://localhost:6443/cas/logout", securityContextLogoutHandler());
+	    "http://localhost:3030/cas/logout", securityContextLogoutHandler());
 	  logoutFilter.setFilterProcessesUrl("/logout/cas");
 	  return logoutFilter;
 	}
@@ -79,7 +78,7 @@ public class CasSecuredAppApplication {
 	@Bean
 	public SingleSignOutFilter singleSignOutFilter() {
 	  SingleSignOutFilter singleSignOutFilter = new SingleSignOutFilter();
-	  singleSignOutFilter.setCasServerUrlPrefix("https://localhost:6443/cas");
+	  singleSignOutFilter.setCasServerUrlPrefix("http://localhost:3030/cas");
 	  singleSignOutFilter.setIgnoreInitConfiguration(true);
 	  return singleSignOutFilter;
 	}
